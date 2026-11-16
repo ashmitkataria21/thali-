@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Thali – Discover and order food</title>
+<style>
+:root{--bg:#fbf8f3;--surface:#fff;--ink:#2a1b38;--muted:#6f6479;--line:#e8e0ea;--accent:#f2a900;--accent-ink:#2a1b38;--green:#1f8a5f;--plum:#2a1b38;--plum-ink:#fff;color-scheme:light;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17101f;--surface:#241a30;--ink:#f4eef8;--muted:#a99bb6;--line:#3a2d48;--green:#48c895;--plum:#0f0a15;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#17101f;--surface:#241a30;--ink:#f4eef8;--muted:#a99bb6;--line:#3a2d48;--green:#48c895;--plum:#0f0a15;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Hanken Grotesk",system-ui,sans-serif}
+h1,h2,h3{font-family:"Bricolage Grotesque","Hanken Grotesk",system-ui,sans-serif;margin:0;letter-spacing:-.02em}
+button{font:inherit;cursor:pointer;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--plum);color:var(--plum-ink)}
+.bar{max-width:1100px;margin:auto;padding:12px 20px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.logo{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-weight:800;font-size:26px;letter-spacing:-.03em}
+.logo span{color:var(--accent)}
+.loc,.search{background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:9px 14px;display:flex;gap:8px;align-items:center}
+.search{flex:1;min-width:200px}
+.search input{border:0;background:none;color:inherit;font:inherit;width:100%;outline:none}
+.cartbtn{background:var(--accent);color:var(--accent-ink);border:0;border-radius:10px;padding:9px 16px;font-weight:700}
+main{max-width:1100px;margin:auto;padding:0 20px 60px}
+.hero{padding:44px 0 24px}
+.hero h1{font-size:clamp(34px,6vw,60px);line-height:1.05;max-width:14ch}
+.hero p{color:var(--muted);max-width:46ch;margin:14px 0 0;font-size:18px}
+.tabs{display:flex;gap:6px;margin:22px 0 8px;border-bottom:1px solid var(--line)}
+.tab{background:none;border:0;padding:10px 16px;font-weight:600;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-1px}
+.tab[aria-selected="true"]{color:var(--ink);border-color:var(--accent)}
+.cats{display:flex;gap:14px;overflow-x:auto;padding:16px 0}
+.cat{flex:none;width:84px;text-align:center;background:none;border:0;padding:0}
+.cat i{display:grid;place-items:center;width:72px;height:72px;margin:0 auto 6px;border-radius:50%;background:var(--surface);border:2px solid var(--line);font-size:34px;font-style:normal}
+.cat[aria-pressed="true"] i{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 22%,var(--surface))}
+.cat span{font-size:13px;font-weight:600}
+.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:6px 0 18px}
+.chip{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:14px}
+.chip[aria-pressed="true"]{background:var(--plum);color:var(--plum-ink);border-color:var(--plum)}
+select.chip{appearance:auto}
+h2{font-size:24px;margin-bottom:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:20px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;text-align:left;padding:0;display:block;width:100%}
+.card:hover{border-color:var(--ink)}
+.pic{height:140px;display:grid;place-items:center;font-size:64px;position:relative}
+.off{position:absolute;left:0;bottom:12px;background:var(--plum);color:var(--plum-ink);font-size:12px;font-weight:700;padding:3px 10px;border-radius:0 6px 6px 0}
+.info{padding:12px 14px 14px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.info h3{font-size:18px}
+.rate{background:var(--green);color:#fff;font-weight:700;font-size:13px;padding:2px 8px;border-radius:6px}
+.sub{color:var(--muted);font-size:14px;margin-top:2px}
+.empty{padding:40px 0;color:var(--muted)}
+dialog{border:0;border-radius:16px;padding:0;width:min(520px,94vw);max-height:86vh;background:var(--surface);color:var(--ink)}
+dialog::backdrop{background:rgba(20,10,30,.55)}
+.dh{padding:18px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px}
+.dh h3{font-size:22px}
+.x{background:none;border:0;font-size:22px;line-height:1}
+.dish{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--line)}
+.veg{display:inline-block;width:12px;height:12px;border:2px solid var(--green);border-radius:2px;margin-right:6px;position:relative;top:1px}
+.veg.nv{border-color:#c0392b}
+.veg::after{content:"";position:absolute;inset:2px;border-radius:50%;background:var(--green)}
+.veg.nv::after{background:#c0392b}
+.add{background:var(--surface);color:var(--green);border:1px solid var(--green);border-radius:8px;padding:5px 18px;font-weight:700}
+.stepper{display:inline-flex;align-items:center;gap:10px;background:var(--green);color:#fff;border-radius:8px;padding:3px 8px;font-weight:700}
+.stepper button{background:none;border:0;color:#fff;font-size:18px;padding:0 4px}
+.foot{padding:16px 20px;display:flex;justify-content:space-between;align-items:center;font-weight:700}
+.go{background:var(--accent);color:var(--accent-ink);border:0;border-radius:10px;padding:10px 20px;font-weight:700}
+.go:disabled{opacity:.5}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--plum);color:var(--plum-ink);padding:12px 20px;border-radius:10px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:20}
+.toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){.toast{transition:none}}
+</style>
+</head>
+<body>
+<header><div class="bar">
+<div class="logo">thali<span>.</span></div>
+<div class="loc">📍 <select id="city" aria-label="City" style="border:0;background:none;color:inherit;font:inherit"><option>Delhi NCR</option><option>Mumbai</option><option>Bengaluru</option><option>Jaipur</option></select></div>
+<label class="search">🔍 <input id="q" type="search" placeholder="Search restaurant or dish" aria-label="Search restaurants or dishes"></label>
+<button class="cartbtn" id="cartOpen">Cart (<span id="cc">0</span>)</button>
+</div></header>
+<main>
+<section class="hero">
+<h1>Hungry? Find it, order it.</h1>
+<p>Browse restaurants near you, filter by what you feel like, and get it delivered or book a table.</p>
+</section>
+<div class="tabs" role="tablist" id="modes">
+<button class="tab" role="tab" aria-selected="true" data-m="Delivery">Delivery</button>
+<button class="tab" role="tab" aria-selected="false" data-m="Dining out">Dining out</button>
+</div>
+<div class="cats" id="cats" role="group" aria-label="Cuisines"></div>
+<div class="filters">
+<button class="chip" id="fVeg" aria-pressed="false">Pure veg</button>
+<button class="chip" id="fRate" aria-pressed="false">Rating 4.0+</button>
+<button class="chip" id="fFast" aria-pressed="false">Under 30 min</button>
+<select class="chip" id="sort" aria-label="Sort by"><option value="rel">Relevance</option><option value="rate">Rating</option><option value="time">Delivery time</option><option value="cost">Cost: low to high</option></select>
+</div>
+<h2 id="title">Restaurants</h2>
+<div class="grid" id="grid"></div>
+<p class="empty" id="empty" hidden>No restaurants match these filters. Clear a filter or change your search.</p>
+</main>
+
+<dialog id="menu"><div class="dh"><div><h3 id="mName"></h3><div class="sub" id="mSub"></div></div><button class="x" aria-label="Close menu" data-close>×</button></div><div id="mItems"></div><div class="foot"><span id="mTotal"></span><button class="go" id="mCart">View cart</button></div></dialog>
+<dialog id="cart"><div class="dh"><h3>Your cart</h3><button class="x" aria-label="Close cart" data-close>×</button></div><div id="cItems"></div><div class="foot"><span id="cTotal"></span><button class="go" id="order">Place order</button></div></dialog>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const R=[
+{n:"Biryani Darbar",c:"Biryani",e:"🍛",bg:"#f7d9a8",r:4.4,t:32,cost:300,veg:false,off:"20% off",a:"Civil Lines",d:[["Chicken dum biryani",260,0],["Mutton biryani",340,0],["Paneer biryani",220,1],["Raita",50,1]]},
+{n:"Slice of Naples",c:"Pizza",e:"🍕",bg:"#f5c6b8",r:4.2,t:28,cost:450,veg:false,off:"Free delivery",a:"Sector 14",d:[["Margherita",290,1],["Pepperoni",390,0],["Farmhouse",360,1],["Garlic bread",120,1]]},
+{n:"Shree Bhojnalaya",c:"Thali",e:"🍱",bg:"#e9e0a0",r:4.6,t:35,cost:250,veg:true,off:"",a:"Model Town",d:[["Full thali",180,1],["Mini thali",130,1],["Kadhi chawal",110,1],["Gulab jamun",60,1]]},
+{n:"Wok Station",c:"Chinese",e:"🥡",bg:"#c9e2d5",r:3.9,t:25,cost:350,veg:false,off:"15% off",a:"Sector 9",d:[["Veg hakka noodles",170,1],["Chilli chicken",260,0],["Manchurian",190,1],["Spring rolls",140,1]]},
+{n:"Dosa Junction",c:"South Indian",e:"🥞",bg:"#f1dfb6",r:4.5,t:22,cost:200,veg:true,off:"",a:"Gandhi Nagar",d:[["Masala dosa",110,1],["Idli sambar",80,1],["Medu vada",90,1],["Filter coffee",50,1]]},
+{n:"Burger Barn",c:"Burgers",e:"🍔",bg:"#f0cfa3",r:4.1,t:20,cost:280,veg:false,off:"Buy 1 get 1",a:"Main Market",d:[["Aloo tikki burger",99,1],["Chicken burger",169,0],["Fries",89,1],["Cold coffee",110,1]]},
+{n:"Tandoor Tales",c:"North Indian",e:"🍗",bg:"#f4c7b0",r:4.3,t:40,cost:550,veg:false,off:"10% off",a:"Sector 21",d:[["Butter chicken",340,0],["Dal makhani",240,1],["Garlic naan",60,1],["Paneer tikka",260,1]]},
+{n:"Sweet Tooth",c:"Desserts",e:"🍰",bg:"#f3cfe0",r:4.7,t:18,cost:220,veg:true,off:"",a:"Bus Stand Road",d:[["Chocolate truffle",180,1],["Rasmalai",120,1],["Brownie sundae",210,1],["Jalebi",90,1]]}
+];
+const cats=["All",...new Set(R.map(r=>r.c))];
+const ce={All:"🍽️"};R.forEach(r=>ce[r.c]=r.e);
+const S={m:"Delivery",cat:"All",veg:false,rate:false,fast:false,sort:"rel",q:"",cart:{},cur:null};
+const $=id=>document.getElementById(id);
+const rs=n=>"₹"+n;
+$("cats").innerHTML=cats.map(c=>`<button class="cat" data-c="${c}" aria-pressed="${c==="All"}"><i>${ce[c]}</i><span>${c}</span></button>`).join("");
+function render(){
+  let l=R.filter(r=>(S.cat==="All"||r.c===S.cat)&&(!S.veg||r.veg)&&(!S.rate||r.r>=4)&&(!S.fast||r.t<30)&&(!S.q||(r.n+r.c+r.d.map(x=>x[0]).join()).toLowerCase().includes(S.q)));
+  if(S.sort==="rate")l.sort((a,b)=>b.r-a.r);if(S.sort==="time")l.sort((a,b)=>a.t-b.t);if(S.sort==="cost")l.sort((a,b)=>a.cost-b.cost);
+  $("title").textContent=S.m==="Delivery"?`Order from ${l.length} restaurants`:`${l.length} places to dine out`;
+  $("empty").hidden=l.length>0;
+  $("grid").innerHTML=l.map(r=>`<button class="card" data-i="${R.indexOf(r)}"><div class="pic" style="background:${r.bg}"><span aria-hidden="true">${r.e}</span>${r.off?`<span class="off">${r.off}</span>`:""}</div><div class="info"><div class="row"><h3>${r.n}</h3><span class="rate">★ ${r.r}</span></div><div class="sub">${r.c} · ${r.a}</div><div class="sub">${rs(r.cost)} for two · ${S.m==="Delivery"?r.t+" min":"Table available"}</div></div></button>`).join("");
+}
+function toast(t){const e=$("toast");e.textContent=t;e.classList.add("on");clearTimeout(toast.h);toast.h=setTimeout(()=>e.classList.remove("on"),1800)}
+const key=(i,j)=>i+"-"+j;
+function count(){return Object.values(S.cart).reduce((a,b)=>a+b,0)}
+function sync(){$("cc").textContent=count()}
+function dish(i,j){const r=R[i],d=r.d[j],q=S.cart[key(i,j)]||0;
+  return `<div class="dish"><div><span class="veg ${d[2]?"":"nv"}" aria-label="${d[2]?"Veg":"Non-veg"}"></span><b>${d[0]}</b><div class="sub">${rs(d[1])}</div></div>${q?`<span class="stepper"><button data-s="-1" data-k="${key(i,j)}" aria-label="Remove one">−</button>${q}<button data-s="1" data-k="${key(i,j)}" aria-label="Add one">+</button></span>`:`<button class="add" data-s="1" data-k="${key(i,j)}">Add</button>`}</div>`}
+function drawMenu(){const i=S.cur,r=R[i];
+  $("mName").textContent=r.n;$("mSub").textContent=`${r.c} · ★ ${r.r} · ${S.m==="Delivery"?r.t+" min":"Book a table"}`;
+  $("mItems").innerHTML=r.d.map((_,j)=>dish(i,j)).join("");
+  const t=Object.entries(S.cart).filter(([k])=>k.startsWith(i+"-")).reduce((a,[k,q])=>a+q*r.d[k.split("-")[1]][1],0);
+  $("mTotal").textContent=t?`Subtotal ${rs(t)}`:"Add items to start";}
+function drawCart(){const ks=Object.keys(S.cart);let t=0;
+  $("cItems").innerHTML=ks.length?ks.map(k=>{const[i,j]=k.split("-").map(Number),d=R[i].d[j],q=S.cart[k];t+=q*d[1];
+    return `<div class="dish"><div><b>${d[0]}</b><div class="sub">${R[i].n} · ${rs(d[1])}</div></div><span class="stepper"><button data-s="-1" data-k="${k}" aria-label="Remove one">−</button>${q}<button data-s="1" data-k="${k}" aria-label="Add one">+</button></span></div>`}).join(""):`<p class="empty" style="padding:24px 20px">Your cart is empty. Open a restaurant and add a dish.</p>`;
+  $("cTotal").textContent=t?`Total ${rs(t)}`:"";$("order").disabled=!ks.length;}
+document.addEventListener("click",e=>{
+  const t=e.target.closest("button");if(!t)return;
+  if(t.dataset.close!==undefined)t.closest("dialog").close();
+  if(t.dataset.c){S.cat=t.dataset.c;document.querySelectorAll(".cat").forEach(b=>b.setAttribute("aria-pressed",b===t));render()}
+  if(t.dataset.i!==undefined){S.cur=+t.dataset.i;drawMenu();$("menu").showModal()}
+  if(t.dataset.m){S.m=t.dataset.m;document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",b===t));render()}
+  if(t.dataset.s){const k=t.dataset.k;S.cart[k]=(S.cart[k]||0)+ +t.dataset.s;if(S.cart[k]<=0)delete S.cart[k];sync();if($("menu").open)drawMenu();if($("cart").open)drawCart()}
+});
+for(const[id,k]of[["fVeg","veg"],["fRate","rate"],["fFast","fast"]])$(id).onclick=function(){S[k]=!S[k];this.setAttribute("aria-pressed",S[k]);render()};
+$("sort").onchange=e=>{S.sort=e.target.value;render()};
+$("q").oninput=e=>{S.q=e.target.value.trim().toLowerCase();render()};
+$("cartOpen").onclick=()=>{drawCart();$("cart").showModal()};
+$("mCart").onclick=()=>{$("menu").close();drawCart();$("cart").showModal()};
+$("order").onclick=()=>{S.cart={};sync();$("cart").close();toast("Order placed. Your food is on the way.")};
+render();
+</script>
+</body>
+</html>
